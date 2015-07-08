@@ -3,18 +3,22 @@
 Python版本2.7X <br />
 Django 1.8 <br />
 
-python2.7下载地址 <br />
+#python2.7安装 <br />
 wget https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz <br />
+./configure --enable-shared --prefix=/usr/local/python2.7/<br />
+make<br />
+make install<br />
+echo /usr/local/python2.7/lib/ >> /etc/ld.so.conf && ldconfig<br />
 
-django安装使用pip <br />
-pip install django <br />
+#django安装使用pip <br />
+/usr/local/python2.7/bin/pip install django <br />
 
 # 修改连接Docker地址 <br />
-# vim control/utils/docker_api.py <br />
+vim control/utils/docker_api.py <br />
 domain='http://10.0.2.23:4243' <br />
 
 运行(直接浏览器就可以访问了) <br />
-python2.7 manage.py runserver 0.0.0.0:8080 <br />
+/usr/local/python2.7/bin/python2.7 manage.py runserver 0.0.0.0:8080 <br />
 
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/1.png)
 <br />
