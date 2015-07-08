@@ -1,11 +1,10 @@
 # Mydocker
-搭建Python+Django环境即可<br />
+环境Python+Django<br />
 Python版本2.7X <br />
 Django 1.8 <br />
 
-第一版功能
-   目前仅支持容器的 启动、停止、删除、创建、inspect、镜像的显示.
-
+第一版功能<br />
+   目前仅支持容器的 启动、停止、删除、创建、inspect、镜像的显示.<br />
 
 #python2.7安装 <br />
 wget https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz <br />
@@ -23,13 +22,13 @@ domain='http://10.0.2.23:4243' <br />
 
 运行(直接浏览器就可以访问了) <br />
 /usr/local/python2.7/bin/python2.7 manage.py runserver 0.0.0.0:8080 <br />
-
+# 容器
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/1.png)
-<br />
+创建容器<br />
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/2.png)
-<br />
+容器详情<br />
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/3.png)
-<br />
+镜像<br />
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/4.png)
 
 
