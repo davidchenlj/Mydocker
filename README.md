@@ -13,6 +13,11 @@ make<br />
 make install<br />
 echo /usr/local/python2.7/lib/ >> /etc/ld.so.conf && ldconfig<br />
 
+# 安装python-pip
+wget http://peak.telecommunity.com/dist/ez_setup.py<br />
+/usr/local/python2.7/bin/python2.7 ez_setup.py <br />
+/usr/local/python2.7/bin/easy_install pip<br />
+
 #django安装使用pip <br />
 /usr/local/python2.7/bin/pip install django <br />
 
