@@ -17,8 +17,11 @@ domain='http://10.0.2.23:4243' <br />
 python2.7 manage.py runserver 0.0.0.0:8080 <br />
 
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/1.png)
+<br />
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/2.png)
+<br />
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/3.png)
+<br />
 ![Aaron Swartz](https://github.com/davidchenlj/Mydocker/raw/master/img/4.png)
 
 
