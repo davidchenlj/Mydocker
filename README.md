@@ -3,6 +3,10 @@
 Python版本2.7X <br />
 Django 1.8 <br />
 
+第一版功能
+   目前仅支持容器的 启动、停止、删除、创建、inspect、镜像的显示.
+
+
 #python2.7安装 <br />
 wget https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz <br />
 ./configure --enable-shared --prefix=/usr/local/python2.7/<br />
