@@ -1,0 +1,91 @@
+{% extends "base/base.html" %}
+{% load control_templatetags %}
+{% block content %}
+<style type="text/css">
+    .glyphicon{COLOR: #000000}
+</style>
+        <div id="wrapper">
+        {% include "base/left_base.html" %}
+
+            <div class="row">
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                    <div class="panel panel-default">
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="dataTable_wrapper">
+                                <table class="table table-striped table-hover" id="tabsort">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>名称</th>
+                                            <th>状态</th>
+                                            <th>命令</th>
+                                            <th>镜像</th>
+                                            <th>创建时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for n in containers_list%}
+                                            <tr class="odd gradeX">
+                                                <td><a href="/control/inspect_container/{{ n.Id }}">{{n.Id|slice:"20"}}</a></td>
+                                                <td><a href="#">{{ n.Names.0|print_containers_name }}</a></td>
+
+                                                {% if n.Status|containers_status == "no" %}
+                                                    <td style="font-size:12px;font-weight:bold;color:#FF0000;" align="center"><span class="fa fa-exclamation-circle" aria-hidden="true" style="color:#FF0000;"></span>&nbsp;已停止</td>
+                                                {% else %}
+                                                    <td style="font-size:12px;font-weight:bold;color:#006400" align="center"><span class="fa fa-check-circle" aria-hidden="true" style="color:#006400;"></span>&nbsp;运行中</td>
+                                                {% endif %}
+                                                <td>{{ n.Command }}</td>
+                                                <td><a href="#">{{ n.Image }}</a></td>
+                                                <td style="font-size: 12px">{{ n.Created|print_timestamp }}</td>
+                                                {% if n.Status|containers_status == "no" %}
+                                                    <td align="center"><button id="containers_start_{{ n.Id }}" type="button" onclick="containers_action('{{ n.Id }}','start')" class="btn btn-default btn-xs" data-loading-text="正在启动.."><span class="glyphicon glyphicon-play" aria-hidden="true" style="color:#3f903f;"></span>启动</button>&nbsp;<button type="button" onclick="containers_action('{{ n.Id }}','remove_container')" class="btn btn-default btn-xs"><span class="fa fa-minus-circle danger"  style="color:#9f191f;" aria-hidden="true"></span>删除</button>
+                                                {% else %}
+                                                    <td align="center"><button id="containers_start_{{ n.Id }}"  type="button" onclick="containers_action('{{ n.Id }}','start')" class="btn btn-default btn-xs" data-loading-text="正在启动.."><span class="glyphicon glyphicon-play" aria-hidden="true" style="color:#3f903f;"></span>启动</button>&nbsp;<button id="containers_stop_{{ n.Id }}" type="button" onclick="containers_action('{{ n.Id }}','stop')" class="btn btn-default btn-xs" data-loading-text="正在停止.."><span class="glyphicon glyphicon-stop"  style="color:#9f191f;" aria-hidden="true"></span>停止</button>
+                                                {% endif %}
+
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            </div>
+            <!-- /.row -->
+
+{% endblock %}
+{% block js_append %}
+  <script language="javascript">
+    function containers_action(containers_id, action){
+        $('#containers_'+ action + '_' + containers_id).button('loading').queue(function() {
+        });
+        $.post('/control/containers_action/', {
+            containers_id:containers_id,
+            action:action
+        }, function (e) {
+            if (e != 'ok'){
+                alert(e)
+            }else{
+                $('#containers_'+ action + '_' + containers_id).button('reset');
+                window.top.location.reload()
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('#tabsort').DataTable({
+            responsive: true
+        });
+    });
+  </script>
+{% endblock %}

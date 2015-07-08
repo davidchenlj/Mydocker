@@ -1,0 +1,39 @@
+<div ng-controller="HeaderController" ng-include="template" class="ng-scope"><div ng-show="isLoggedIn" class="ui two column relaxed grid ng-scope">
+    <section class="column">
+        <div class="ui header"><span class="logo"><a href="/#">Mydocker</a></span></div>
+    </section>
+    <section class="right aligned column">
+        <div ng-show="username" class="ui dropdown ng-binding" onclick="show_create_containers()"><i class="fa fa-database"></i> 创建容器</div>
+        <div  class="ui dropdown ng-binding">
+                <a id="dLabel"  data-toggle="dropdown"  style="color:#555555">
+                    &nbsp;用户管理 <i class="fa fa-user"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <a class="item" target="_self" href="/logout" style="color:#555555">Logout</a>
+                </ul>
+
+        </div>
+    </section>
+</div>
+
+</div>
+<div ng-show="isLoggedIn" class="ui ng-scope">
+    <div id="menu-main" class="ui tabular menu">
+        <a class="item"  href="#">
+            <i class="fa fa-dashboard fa-fw"></i>Dashboard
+        </a>
+        <a class="item {% if '/control/index/' == request.path  or active == 'yes' %} active{% endif  %}" href="/control/index/">
+            <i class="fa fa-tasks fa-fw"></i>Containers
+        </a>
+        <a class="item {% if '/control/images_list/' == request.path  %} active{% endif  %}" href="/control/images_list/">
+            <i class="fa fa-database"></i>Images
+        </a>
+
+        <a class="item" href="#">
+            <i class="fa fa-cloud fa-fw"></i>Engines
+        </a>
+        <a class="item" href="#">
+            <i class="fa fa-sitemap fa-fw"></i>Events
+        </a>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+{% extends "base/base.html" %}
+{% load control_templatetags %}
+{% block content %}
+<style type="text/css">
+    .glyphicon{COLOR: #000000}
+
+</style>
+<div id="wrapper">
+    {% include "base/left_base.html" %}
+    <!-- /.row -->
+    <div style="padding-right:15px; padding-left: 15px">
+        <div class="ui stackable grid four column ng-scope">
+            <div class="ui column">
+                <div class="ui section">
+                    <h3 class="ui header">Name</h3>
+                    <div class="ng-binding">{{ inspect_data.Name }}</div>
+                </div>
+                <div class="ui divider"></div>
+                <div>
+                    <h3 class="ui header">Image</h3>
+                    <div class="ng-binding">{{ inspect_data.Config.Image }}</div>
+                </div>
+                <div class="ui divider"></div>
+                <div>
+                    <h3 class="ui header">Cmd</h3>
+                    <div class="ng-binding">{% for cmd in inspect_data.Config.Cmd %} {{ cmd }}&nbsp;{% endfor %}</div>
+                </div>
+                <div class="ui divider"></div>
+                <h4 class="ui top attached block header">Environment</h4>
+                <div class="ui segment attached ng-hide" ng-hide="container.image.environment">No environment variables</div>
+
+            </div>
+            <div class="ui column">
+                <div class="ui section">
+                    <h3 class="ui header">Hostname</h3>
+                    <div class="ng-binding">{{ inspect_data.Config.Hostname }}</div>
+                </div>
+                <div class="ui divider"></div>
+                <div class="ui section">
+                    <h3 class="ui header">Engine</h3>
+                    <div class="ng-binding">10.0.2.23</div>
+                </div>
+                <div class="ui divider"></div>
+                <div class="ui section">
+                    <h3 class="ui header">Network Mode</h3>
+                    <div class="ng-binding">{{ inspect_data.HostConfig.NetworkMode }}</div>
+                </div>
+                <div class="ui divider"></div>
+                <div class="ui section">
+                    <h3 class="ui header">Restart Policy</h3>
+                    <div class="ng-binding">
+                        no<span ng-show="container.image.restart_policy.maximum_retry" class="ng-binding ng-hide">:</span>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <div class="ui section">
+                    <h3 class="ui header">Privileged</h3>
+                    <div class="ng-binding">
+
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <h4 class="ui top attached block header">Ports</h4>
+                <div class="ui segment attached">
+                {% for k,y in inspect_data.NetworkSettings.Ports.items %}
+                    <div ng-repeat="l in portLinks | orderBy:predicate" class="ng-scope">
+                        <a href="http://{{ y.0.HostIp }}:{{ y.0.HostPort }}" target="" class="ng-binding">{{ k }} -&gt; {{ y.0.HostIp }}:{{ y.0.HostPort }}</a>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="ui column">
+                <h3 class="ui header">CPU</h3>
+                <div>
+                    <canvas barchart="" data="containerCpuData" options="chartOptions" width="409" height="409" class="ng-isolate-scope" style="width: 409px; height: 409px;"></canvas>
+                </div>
+            </div>
+            <div class="ui column">
+                <h3 class="ui header">Memory</h3>
+                <div>
+                    <canvas barchart="" data="containerMemoryData" options="chartOptions" width="409" height="409" class="ng-isolate-scope" style="width: 409px; height: 409px;"></canvas>
+                </div>
+            </div>
+        </div>
+    <!-- /.row -->
+    </div>
+    </div>
+    <!-- /.row -->
+</div>
+
+
+
+{% endblock %}
+{% block js_append %}
+<script language="javascript">
+</script>
+{% endblock %}
