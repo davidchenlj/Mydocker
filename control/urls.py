@@ -8,4 +8,6 @@ urlpatterns = patterns('control.views',
     url(r'^inspect_container/(\w+)$', 'inspect_container', {'template_name':'inspect_container.html'}, name='inspect_container'),
     url(r'^create_containers/$', 'create_containers', name='create_containers'),
     url(r'^get_images_list/$', 'get_images_list', name='get_images_list'),
+    url(r'^add_vm_host/$', 'add_vm_host', {'template_name':'vm_host.html'}, name='add_vm_host'),
+    url(r'^vm_host_list/$', 'vm_host_list', {'template_name':'vm_host_list.html'}, name='vm_host_list'),
 )

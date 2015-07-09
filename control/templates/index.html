@@ -3,17 +3,47 @@
 {% block content %}
 <style type="text/css">
     .glyphicon{COLOR: #000000}
+    .stop{
+        font-size:12px;
+        font-weight:bold;
+        color:#FF0000;
+        text-align: center
+    }
+    .start{
+        font-size:12px;
+        font-weight:bold;
+        color:#006400;
+        text-align: center
+    }
 </style>
         <div id="wrapper">
         {% include "base/left_base.html" %}
+            <div style="margin-left: 10px; margin-top: 10px" class="ui icon buttons toolbar ng-scope">
+                <a href="#" onclick="show_create_containers()" class="ui button mini green">
+                    <i class="add icon"></i>
+                    Add
+                </a>
 
-            <div class="row">
+                <a id="update_button" style="margin-left: 5px" href="#" onclick="updateEngine()" class="ui button mini green" data-loading-text="正在同步..">
+                    <i class="refresh icon"></i>
+                    同步容器
+                </a>
             </div>
             <!-- /.row -->
-            <div class="row">
+            <div class="row"  style="padding-left: 12px">
                     <div class="panel panel-default">
                         <!-- /.panel-heading -->
                         <div class="panel-body">
+                            <div id="error" class="ui small message red ng-hide" style="display: none;">
+                                <div class="header">Error</div>
+                                <p class="ng-binding"></p>
+                            </div>
+
+                            <div id="success" class="ui small message green ng-hide" style="display: none;" >
+                                <div class="header">Error</div>
+                                <p class="ng-binding"></p>
+                            </div>
+
                             <div class="dataTable_wrapper">
                                 <table class="table table-striped table-hover" id="tabsort">
                                     <thead>
@@ -23,28 +53,30 @@
                                             <th>状态</th>
                                             <th>命令</th>
                                             <th>镜像</th>
+                                            <th>docker主机</th>
                                             <th>创建时间</th>
                                             <th>操作</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for n in containers_list%}
+                                        {% for n in queryset %}
                                             <tr class="odd gradeX">
-                                                <td><a href="/control/inspect_container/{{ n.Id }}">{{n.Id|slice:"20"}}</a></td>
-                                                <td><a href="#">{{ n.Names.0|print_containers_name }}</a></td>
+                                                <td><a href="/control/inspect_container/{{ n.containers_id }}">{{n.containers_id|slice:"20"}}</a></td>
+                                                <td><a href="#">{{ n.name }}</a></td>
 
-                                                {% if n.Status|containers_status == "no" %}
-                                                    <td style="font-size:12px;font-weight:bold;color:#FF0000;" align="center"><span class="fa fa-exclamation-circle" aria-hidden="true" style="color:#FF0000;"></span>&nbsp;已停止</td>
+                                                {% if n.status == "stop" %}
+                                                    <td class="stop" id="c_status_{{ n.containers_id }}"><span class="fa fa-exclamation-circle" aria-hidden="true" style="color:#FF0000;"></span>&nbsp;已停止</td>
                                                 {% else %}
-                                                    <td style="font-size:12px;font-weight:bold;color:#006400" align="center"><span class="fa fa-check-circle" aria-hidden="true" style="color:#006400;"></span>&nbsp;运行中</td>
+                                                    <td class="start" id="c_status_{{ n.containers_id }}"><span class="fa fa-check-circle" aria-hidden="true" style="color:#006400;"></span>&nbsp;运行中</td>
                                                 {% endif %}
-                                                <td>{{ n.Command }}</td>
-                                                <td><a href="#">{{ n.Image }}</a></td>
-                                                <td style="font-size: 12px">{{ n.Created|print_timestamp }}</td>
-                                                {% if n.Status|containers_status == "no" %}
-                                                    <td align="center"><button id="containers_start_{{ n.Id }}" type="button" onclick="containers_action('{{ n.Id }}','start')" class="btn btn-default btn-xs" data-loading-text="正在启动.."><span class="glyphicon glyphicon-play" aria-hidden="true" style="color:#3f903f;"></span>启动</button>&nbsp;<button type="button" onclick="containers_action('{{ n.Id }}','remove_container')" class="btn btn-default btn-xs"><span class="fa fa-minus-circle danger"  style="color:#9f191f;" aria-hidden="true"></span>删除</button>
+                                                <td>{{ n.command }}</td>
+                                                <td><a href="#">{{ n.images }}</a></td>
+                                                <td>{{ n.host }}</td>
+                                                <td style="font-size: 12px">{{ n.create_time }}</td>
+                                                {% if n.status == "stop" %}
+                                                    <td align="center"><button id="containers_start_{{ n.containers_id }}" type="button" onclick="containers_action('{{ n.containers_id }}','start')" class="btn btn-default btn-xs" data-loading-text="正在启动.."><span class="glyphicon glyphicon-play" aria-hidden="true" style="color:#3f903f;"></span>启动</button>&nbsp;<button type="button" onclick="containers_action('{{ n.containers_id }}','remove_container')" class="btn btn-default btn-xs"><span class="fa fa-minus-circle danger"  style="color:#9f191f;" aria-hidden="true"></span>删除</button>
                                                 {% else %}
-                                                    <td align="center"><button id="containers_start_{{ n.Id }}"  type="button" onclick="containers_action('{{ n.Id }}','start')" class="btn btn-default btn-xs" data-loading-text="正在启动.."><span class="glyphicon glyphicon-play" aria-hidden="true" style="color:#3f903f;"></span>启动</button>&nbsp;<button id="containers_stop_{{ n.Id }}" type="button" onclick="containers_action('{{ n.Id }}','stop')" class="btn btn-default btn-xs" data-loading-text="正在停止.."><span class="glyphicon glyphicon-stop"  style="color:#9f191f;" aria-hidden="true"></span>停止</button>
+                                                    <td align="center"><button id="containers_start_{{ n.containers_id }}"  type="button" onclick="containers_action('{{ n.containers_id }}','start')" class="btn btn-default btn-xs" data-loading-text="正在启动.."><span class="glyphicon glyphicon-play" aria-hidden="true" style="color:#3f903f;"></span>启动</button>&nbsp;<button id="containers_stop_{{ n.containers_id }}" type="button" onclick="containers_action('{{ n.containers_id }}','stop')" class="btn btn-default btn-xs" data-loading-text="正在停止.."><span class="glyphicon glyphicon-stop"  style="color:#9f191f;" aria-hidden="true"></span>停止</button>
                                                 {% endif %}
 
                                             </tr>
@@ -63,10 +95,177 @@
             </div>
             <!-- /.row -->
 
+<table style="display: none;">
+    <tbody id="content_vm">
+    <tr>
+        <td><input class="form-control" type="text" placeholder="端口" name="port" value=""></td>
+        <td width="25%">
+            <select class="form-control" name="protocol">
+                <option value="tcp">TCP</option>
+                <option value="udp">UDP</option>
+            </select>
+        </td>
+        <td><input class="form-control" type="text" placeholder="动态" name="HostPort" value=""></td>
+        <td style="vertical-align:middle;"><a href="#" onclick="rmtr(this)"><i class="fa fa-times-circle"></i></a></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="modal fade" id="create_containers" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:900px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">创建新容器</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="create_from_error" class="ui small message red ng-hide" style="display: none;">
+                        <div class="header">Error</div>
+                        <p class="ng-binding"></p>
+                    </div>
+                    <form id="create_containers_from" action="#" method="post">
+                        <div class="col-md-6">
+                            <div style="width:400px;font-family: Tahoma,Verdana,微软雅黑,新宋体" >
+                                <div class="form-group">
+                                    <label class="control-label" style="font-family: Tahoma,Verdana,微软雅黑,新宋体">容器名称:</label>
+                                    <input type="text" class="form-control" name="name" id="name" style="width:200px;" required>
+                                </div>
+
+                                <div class="col-xs-5" style="padding-left:2px">
+                                    <div class="form-group">
+                                        <label class="control-label">Docker主机:</label>
+                                        <select id="vm_host"  type="select" name="vm_host" label="每个主机创建的容器数" style="width:150px;" class="form-control">
+                                            <option value="vm" >选择主机</option>
+                                            {% for vm in queryset_docker_vm %}
+                                                <option value="{{ vm.docker_addr }}" >{{ vm.docker_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-7">
+                                    <div class="form-group">
+                                        <label class="control-label">镜像:</label>
+                                        <select id="images_html"  type="select" name="image" label="每个主机创建的容器数" class="form-control">
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="control-label">执行命令:</label>
+                                    <input type="text" class="form-control" placeholder="/bin/bash"  name="command" id="command">
+                                </div>
+
+                                <!--div class="col-xs-6" style="padding-left:2px">
+                                    <div class="form-group">
+                                        <label class="control-label">每个主机创建的容器数:</label>
+                                        <select type="select" name="Memory" label="每个主机创建的容器数" class="form-control">
+                                            <option value="0">无限制</option>
+                                            <option value="536870912" >1</option>
+                                            <option value="1073741824">2</option>
+                                            <option value="2147483648">3</option>
+                                            <option value="4294967296">4</option>
+                                        </select>
+                                    </div>
+                                </div-->
+                                <!--div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label">内存限制:</label>
+                                        <select type="select" name="Memory" label="内存限制" class="form-control">
+                                            <option value="0">无限制</option>
+                                            <option value="536870912" >512MB</option>
+                                            <option value="1073741824">1GB</option>
+                                            <option value="2147483648">2GB</option>
+                                            <option value="4294967296">4GB</option>
+                                        </select>
+                                    </div>
+                                </div-->
+                                <!--div class="form-group">
+                                    <label class="control-label">高级选项:</label>
+                                    <select type="select" name="Memory" label="高级选项" class="form-control">
+                                        <option value="0">请选择</option>
+                                        <option value="536870912" >HostName</option>
+                                        <option value="1073741824">DNS</option>
+                                    </select>
+                                </div-->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <div class="form-group">
+                                    <div class="well">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>容器端口</th>
+                                                <th>协议</th>
+                                                <th>主机端口</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="append_port">
+                                            <tr>
+                                                <td><input class="form-control" type="text" placeholder="端口" name="port" value=""></td>
+                                                <td width="25%">
+                                                    <select class="form-control" name="protocol">
+                                                        <option value="tcp">TCP</option>
+                                                        <option value="udp">UDP</option>
+                                                    </select>
+                                                </td>
+                                                <td><input class="form-control" type="text" placeholder="动态" name="HostPort" value=""></td>
+                                                <td style="vertical-align:middle;"><a href="#" onclick="rmtr(this)"><i class="fa fa-times-circle"></i></a></td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-default" onclick="append_port()">添加端口映射</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--div class="form-group">
+                                    <div class="well">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>名称</th>
+                                                <th>值</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr autocomplete="off">
+                                                <td><input class="form-control" type="text" placeholder="名称" name="port1" value=""></td>
+                                                <td><input class="form-control" type="text" placeholder="值" name="HostPort1" value=""></td>
+                                                <td style="vertical-align:middle;"><a href="#"><i class="fa fa-times-circle"></i></a></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-default">增加环境变量</button>
+                                        </div>
+                                    </div>
+                                </div-->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" id="button_create_containers" >创建容器</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block js_append %}
   <script language="javascript">
     function containers_action(containers_id, action){
+        <!-- 启动 停止 删除 容器 -->
         $('#containers_'+ action + '_' + containers_id).button('loading').queue(function() {
         });
         $.post('/control/containers_action/', {
@@ -74,10 +273,106 @@
             action:action
         }, function (e) {
             if (e != 'ok'){
-                alert(e)
+                $('#error').empty().append('<div class="header">' +  e  + '</div><p class="ng-binding"></p>').show()
+                $('#containers_'+ action + '_' + containers_id).button('reset');
+                setTimeout(function(){
+                    $('#error').hide()
+                }, 5000);
             }else{
                 $('#containers_'+ action + '_' + containers_id).button('reset');
-                window.top.location.reload()
+                $('#success').empty().append('<div class="header">操作成功!</div><p class="ng-binding"></p>').show()
+                if (action == 'stop'){
+                    $('#c_status_'+containers_id).removeClass('start').addClass('stop');
+                    $('#c_status_'+containers_id).empty().append('<span class="fa fa-exclamation-circle" aria-hidden="true" style="color:#FF0000;"></span>&nbsp;已停止')
+                }
+                if (action == 'start'){
+                    $('#c_status_'+containers_id).removeClass('stop').addClass('start');
+                    $('#c_status_'+containers_id).empty().append('<span class="fa fa-check-circle" aria-hidden="true" style="color:#006400;"></span>&nbsp;运行中')
+                }
+
+                setTimeout(function(){
+                    $('#success').hide()
+                }, 2000);
+
+            }
+        });
+    }
+
+    <!-- 端口新删除 -->
+    function rmtr(nowTr){
+        $(nowTr).parents('tr:first').remove();
+    }
+
+    <!-- 添加毒啊你徐 -->
+    function append_port(){
+        $('#append_port').append($('#content_vm').html())
+    }
+
+    (function($){
+        $.fn.serializeJson=function(){
+            var serializeObj={};
+            var array=this.serializeArray();
+            var str=this.serialize();
+            $(array).each(function(){
+                if(serializeObj[this.name]){
+                    if($.isArray(serializeObj[this.name])){
+                        serializeObj[this.name].push(this.value);
+                    }else{
+                        serializeObj[this.name]=[serializeObj[this.name],this.value];
+                    }
+                }else{
+                    serializeObj[this.name]=this.value;
+                }
+            });
+            return serializeObj;
+        };
+    })(jQuery);
+
+    $('#button_create_containers').click(function (e) {
+        e.preventDefault();
+        //console.log($('#create_containers_from').serializeJson());
+        $.ajax({
+            type: 'POST',
+            url: "/control/create_containers/",
+            contentType: "application/json",
+            data: JSON.stringify($('#create_containers_from').serializeJson()),
+            success:function (data) {
+                if (data == "ok") {
+                    window.location.reload()
+                } else {
+                    $('#create_from_error').empty().append('<div class="header">'+ data +'</div><p class="ng-binding"></p>').show()
+                }
+            }
+        });
+    });
+
+    <!-- 显示创建容器 -->
+    function show_create_containers(){
+        $('#create_containers').modal('show')
+    }
+    <!-- 获取不同机器的镜像 -->
+    $("#vm_host").change(function(){
+        var docker_host=$("#vm_host").val();
+        if (docker_host != "vm"){
+            $.post('/control/get_images_list/', {
+                docker_host:docker_host
+            }, function (e) {
+                $('#images_html').empty().append(e)
+            });
+        }
+    });
+
+    function updateEngine(){
+        $('#update_button').button('loading').queue(function() {});
+        $.post('/control/add_vm_host/', {
+            docker_update:'update'
+        }, function (e) {
+            if (e != 'ok'){
+                $('#error').empty().append('<div class="header">更新成功.</div><p class="ng-binding"></p>').show()
+                $('#update_button').button('reset');
+            }else{
+                window.location.reload()
+                $('#update_button').button('reset');
             }
         });
     }

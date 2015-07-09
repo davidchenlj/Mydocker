@@ -1,0 +1,109 @@
+{% extends "base/base.html" %}
+{% load control_templatetags %}
+{% block content %}
+<style type="text/css">
+    .glyphicon{COLOR: #000000}
+</style>
+        <div id="wrapper">
+        {% include "base/left_base.html" %}
+        <div>
+            <div class="row">
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                      <div ng-view="" class="ng-scope"><div class="ui two column grid ng-scope">
+                        <div class="ui column">
+                            <div class="ui form segment ng-pristine ng-valid" ng-form="addEngineForm" novalidate="">
+                                <div id="error" class="ui small message gree ng-hide" style="display:none;">
+                                    <div class="header">Error</div>
+                                    <p class="ng-binding"></p>
+                                </div>
+                                <div class="field">
+                                    <label>Name</label>
+                                    <div class="ui left labeled input">
+                                        <input type="text" id="docker_name" name="docker_name" placeholder="docker主机名称" class="ng-pristine ng-valid">
+                                        <div class="ui corner label">
+                                            <i class="icon asterisk"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Address</label>
+                                    <div class="ui left labeled input">
+                                        <input type="text" id="docker_addr" name="docker_addr" placeholder="http://10.1.2.3:2375 or https://10.1.2.3:2376 for TLS"  class="ng-pristine ng-valid">
+                                        <div class="ui corner label">
+                                            <i class="icon asterisk"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--div class="ui two fields">
+                                    <div class="field">
+                                        <label>CPUs</label>
+                                        <div class="ui left labeled input">
+                                            <input type="text" name="cpus" placeholder="1.0" ng-model="cpus" class="ng-pristine ng-valid">
+                                            <div class="ui corner label">
+                                                <i class="icon asterisk"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label>Memory</label>
+                                        <div class="ui left labeled input">
+                                            <input type="text" name="memory" placeholder="1024" ng-model="memory" class="ng-pristine ng-valid">
+                                            <div class="ui corner label">
+                                                <i class="icon asterisk"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label>SSL Certificate</label>
+                                    <div class="ui left labeled input">
+                                        <textarea name="ssl_cert" ng-model="ssl_cert" class="ng-pristine ng-valid"></textarea>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>SSL Key</label>
+                                    <div class="ui left labeled input">
+                                        <textarea name="ssl_key" ng-model="ssl_key" class="ng-pristine ng-valid"></textarea>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>CA Certificate</label>
+                                    <div class="ui left labeled input">
+                                        <textarea name="ca_cert" ng-model="ca_cert" class="ng-pristine ng-valid"></textarea>
+                                    </div>
+                                </div-->
+                                <div class="ui blue button" onclick="addEngine()">Add</div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            </div>
+            <!-- /.row -->
+        </div>
+       </div>
+
+{% endblock %}
+{% block js_append %}
+<script language="javascript">
+    function addEngine(){
+        $.post('/control/add_vm_host/', {
+            docker_name:$('#docker_name').val(),
+            docker_addr:$('#docker_addr').val(),
+            docker_update:'add'
+        }, function (e) {
+            if (e != 'ok'){
+                $('#error').empty().append('<div class="header">' +  e  + '</div><p class="ng-binding"></p>').show()
+            }else{
+                window.location.href='/control/vm_host_list/'
+            }
+        });
+    }
+</script>
+{% endblock %}

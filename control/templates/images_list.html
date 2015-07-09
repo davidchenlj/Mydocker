@@ -3,65 +3,95 @@
 {% block content %}
 <style type="text/css">
     .glyphicon{COLOR: #000000}
+    .stop{
+        font-size:12px;
+        font-weight:bold;
+        color:#FF0000;
+        text-align: center
+    }
+    .start{
+        font-size:12px;
+        font-weight:bold;
+        color:#006400;
+        text-align: center
+    }
 </style>
-        <div id="wrapper">
-        {% include "base/left_base.html" %}
-        <div>
-            <div class="row">
-            </div>
-            <!-- /.row -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="dataTable_wrapper">
-
-                                <table class="table table-striped table-hover" id="tabsort">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>名称</th>
-                                            <th>TAR</th>
-                                            <th>创建时间</th>
-                                            <th>大小</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for n in containers_list%}
-                                           {% for row in n.RepoTags %}
-                                                <tr class="odd gradeX">
-                                                    <td><a href="#">{{n.Id|slice:"20"}}</a></td>
-                                                    <td><a href="#">{{ row|print_tag_name }}</a></td>
-                                                    <td><a href="#">{{ row|print_tag }}</a></td>
-                                                    <td style="font-size: 12px">{{ n.Created|print_timestamp }}</td>
-                                                    <td style="font-size: 12px">{{ n.VirtualSize|print_size_m }}</td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% endfor %}
-
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
+<div id="wrapper">
+    {% include "base/left_base.html" %}
+    <div style="margin-left: 10px; margin-top: 10px" class="ui icon buttons toolbar ng-scope">
+        <a id="update_images" style="margin-left: 5px" href="#" onclick="updateImages()" class="ui button mini green" data-loading-text="正在同步..">
+            <i class="refresh icon"></i>
+            同步镜像
+        </a>
+    </div>
+    <!-- /.row -->
+    <div class="row"  style="padding-left: 12px">
+        <div class="panel panel-default">
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div id="error" class="ui small message red ng-hide" style="display: none;">
+                    <div class="header">Error</div>
+                    <p class="ng-binding"></p>
                 </div>
-                <!-- /.col-lg-12 -->
+                <div class="dataTable_wrapper">
+                    <table class="table table-striped table-hover" id="tabsort">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>TAR</th>
+                            <th>Docker主机</th>
+                            <th>创建时间</th>
+                            <th>大小</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for n in containers_list %}
+                        <tr class="odd gradeX">
+                            <td><a href="#">{{n.images_id|slice:"20"}}</a></td>
+                            <td><a href="#">{{ n.name }}</a></td>
+                            <td><a href="#">{{ n.tag }}</a></td>
+                            <td style="font-size: 12px">{{ n.host }}</td>
+                            <td style="font-size: 12px">{{ n.create_time }}</td>
+                            <td style="font-size: 12px">{{ n.virtualsize }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
             </div>
-            </div>
-            <!-- /.row -->
+            <!-- /.panel-body -->
         </div>
-       </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+</div>
+<!-- /.row -->
 
 {% endblock %}
 {% block js_append %}
 <script language="javascript">
+
+    function updateImages(){
+        $('#update_images').button('loading').queue(function() {});
+        $.post('/control/images_list/', {
+            update_image:'images'
+        }, function (e) {
+            if (e != 'ok'){
+                $('#error').empty().append('<div class="header">更新成功.</div><p class="ng-binding"></p>').show()
+                $('#update_images').button('reset');
+            }else{
+                window.location.reload()
+                $('#update_images').button('reset');
+            }
+        });
+    }
+
     $(document).ready(function() {
         $('#tabsort').DataTable({
-           responsive: true
+            responsive: true
         });
     });
 </script>

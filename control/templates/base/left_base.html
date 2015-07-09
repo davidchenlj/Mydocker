@@ -3,7 +3,6 @@
         <div class="ui header"><span class="logo"><a href="/#">Mydocker</a></span></div>
     </section>
     <section class="right aligned column">
-        <div ng-show="username" class="ui dropdown ng-binding" onclick="show_create_containers()"><i class="fa fa-database"></i> 创建容器</div>
         <div  class="ui dropdown ng-binding">
                 <a id="dLabel"  data-toggle="dropdown"  style="color:#555555">
                     &nbsp;用户管理 <i class="fa fa-user"></i>
@@ -29,7 +28,7 @@
             <i class="fa fa-database"></i>Images
         </a>
 
-        <a class="item" href="#">
+        <a class="item {% if '/control/add_vm_host/' == request.path or '/control/vm_host_list/' ==  request.path %}active{% endif  %}" href="/control/vm_host_list/">
             <i class="fa fa-cloud fa-fw"></i>Engines
         </a>
         <a class="item" href="#">

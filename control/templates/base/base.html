@@ -46,7 +46,9 @@
 {% block css_link_append %}
     <style type="text/css">
         .glyphicon{COLOR: #000000}
-
+        html, body {
+            font-size: 13px;
+        }
     </style>
 {% endblock %}
 
@@ -84,161 +86,7 @@
 {% endblock %}
 
 {% block content_app %}
-<div class="modal fade" id="create_containers" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="width:900px;">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">创建新容器</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <form id="create_containers_from" action="#" method="post">
-                    <div class="col-md-6">
-                        <div style="width:400px;font-family: Tahoma,Verdana,微软雅黑,新宋体" >
-                            <div class="form-group">
-                                <label class="control-label" style="font-family: Tahoma,Verdana,微软雅黑,新宋体">容器名称:</label>
-                                <input type="text" class="form-control" name="name" id="name" style="width:200px;" required>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="control-label">镜像:</label>
-                                <select id="images_html"  type="select" name="image" label="每个主机创建的容器数" style="width:300px;" class="form-control">
-
-                                </select>
-                            </div>
-
-                            <!--div class="form-group">
-                                <label class="control-label">主机:</label>
-                                <input style="width:300px;" type="text" class="form-control" name="vm_host" id="vm_host" required>
-                            </div-->
-
-
-                            <div class="form-group">
-                                <label class="control-label">执行命令:</label>
-                                <input type="text" class="form-control" placeholder="/bin/bash"  name="command" id="command">
-                            </div>
-
-                            <!--div class="col-xs-6" style="padding-left:2px">
-                                <div class="form-group">
-                                    <label class="control-label">每个主机创建的容器数:</label>
-                                    <select type="select" name="Memory" label="每个主机创建的容器数" class="form-control">
-                                        <option value="0">无限制</option>
-                                        <option value="536870912" >1</option>
-                                        <option value="1073741824">2</option>
-                                        <option value="2147483648">3</option>
-                                        <option value="4294967296">4</option>
-                                    </select>
-                                </div>
-                            </div-->
-                            <!--div class="col-xs-6">
-                                <div class="form-group">
-                                    <label class="control-label">内存限制:</label>
-                                    <select type="select" name="Memory" label="内存限制" class="form-control">
-                                        <option value="0">无限制</option>
-                                        <option value="536870912" >512MB</option>
-                                        <option value="1073741824">1GB</option>
-                                        <option value="2147483648">2GB</option>
-                                        <option value="4294967296">4GB</option>
-                                    </select>
-                                </div>
-                            </div-->
-                            <!--div class="form-group">
-                                <label class="control-label">高级选项:</label>
-                                <select type="select" name="Memory" label="高级选项" class="form-control">
-                                    <option value="0">请选择</option>
-                                    <option value="536870912" >HostName</option>
-                                    <option value="1073741824">DNS</option>
-                                </select>
-                            </div-->
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div>
-                            <div class="form-group">
-                                <div class="well">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>容器端口</th>
-                                            <th>协议</th>
-                                            <th>主机端口</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="append_port">
-                                        <tr>
-                                            <td><input class="form-control" type="text" placeholder="端口" name="port" value=""></td>
-                                            <td width="25%">
-                                                <select class="form-control" name="protocol">
-                                                    <option value="tcp">TCP</option>
-                                                    <option value="udp">UDP</option>
-                                                </select>
-                                            </td>
-                                            <td><input class="form-control" type="text" placeholder="动态" name="HostPort" value=""></td>
-                                            <td style="vertical-align:middle;"><a href="#" onclick="rmtr(this)"><i class="fa fa-times-circle"></i></a></td>
-                                        </tr>
-
-                                        </tbody>
-                                    </table>
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-default" onclick="append_port()">添加端口映射</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--div class="form-group">
-                                <div class="well">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>名称</th>
-                                            <th>值</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr autocomplete="off">
-                                            <td><input class="form-control" type="text" placeholder="名称" name="port1" value=""></td>
-                                            <td><input class="form-control" type="text" placeholder="值" name="HostPort1" value=""></td>
-                                            <td style="vertical-align:middle;"><a href="#"><i class="fa fa-times-circle"></i></a></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-default">增加环境变量</button>
-                                    </div>
-                                </div>
-                            </div-->
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary" id="button_create_containers" >创建容器</button>
-                    </div>
-                    </form>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<table style="display: none;">
-    <tbody id="content_vm">
-    <tr>
-        <td><input class="form-control" type="text" placeholder="端口" name="port" value=""></td>
-        <td width="25%">
-            <select class="form-control" name="protocol">
-                <option value="tcp">TCP</option>
-                <option value="udp">UDP</option>
-            </select>
-        </td>
-        <td><input class="form-control" type="text" placeholder="动态" name="HostPort" value=""></td>
-        <td style="vertical-align:middle;"><a href="#" onclick="rmtr(this)"><i class="fa fa-times-circle"></i></a></td>
-    </tr>
-    </tbody>
-</table>
 
 {% endblock %}
 {% block footer %}
@@ -274,55 +122,6 @@
 {% block js_append_two %}
 <script language="javascript">
 
-    function rmtr(nowTr){
-        $(nowTr).parents('tr:first').remove();
-    }
-
-    function append_port(){
-        $('#append_port').append($('#content_vm').html())
-    }
-
-    (function($){
-        $.fn.serializeJson=function(){
-            var serializeObj={};
-            var array=this.serializeArray();
-            var str=this.serialize();
-            $(array).each(function(){
-                if(serializeObj[this.name]){
-                    if($.isArray(serializeObj[this.name])){
-                        serializeObj[this.name].push(this.value);
-                    }else{
-                        serializeObj[this.name]=[serializeObj[this.name],this.value];
-                    }
-                }else{
-                    serializeObj[this.name]=this.value;
-                }
-            });
-            return serializeObj;
-        };
-    })(jQuery);
-
-    $('#button_create_containers').click(function (e) {
-        e.preventDefault();
-        //console.log($('#create_containers_from').serializeJson());
-        $.ajax({
-            type: 'POST',
-            url: "/control/create_containers/",
-            contentType: "application/json",
-            data: JSON.stringify($('#create_containers_from').serializeJson())});
-    });
-
-    function post_create_containers(){
-        alert($("#form_update").serializeArray().toString())
-    }
-    function show_create_containers(){
-        $.post('/control/get_images_list/', {
-            pk:''
-        }, function (e) {
-            $('#images_html').empty().append(e)
-        });
-        $('#create_containers').modal('show')
-    }
 </script>
 
 {% endblock %}
